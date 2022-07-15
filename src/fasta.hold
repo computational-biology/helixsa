@@ -1,0 +1,30 @@
+//
+// Created by parthajit on 13/7/20.
+//
+
+#ifndef __fasta_H__
+#define __fasta_H__
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+
+
+struct fasta{
+
+    char* seq[200];
+    char chain[200][6];
+    int num_chain;
+    int num_res;
+    };
+
+    void fasta_create(struct fasta* self, char* file, int size);
+    void fasta_free(struct fasta* self);
+
+
+
+
+
+#endif //  __fasta_H__
