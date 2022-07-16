@@ -16,7 +16,7 @@
 void manipulate_secseq_coil(char* s, char* t);
 void rna_secseq_scoring(int SMAT[][128]);
 void rna_fasta_scoring(int SMAT[][128]);
-int match_score_simple(char* a, char* b);
+double match_score_simple(char* a, char* b);
 
 
 void needleman_wunsch(char* s, char* t, int NWSim[][128], int gap_penalty, char** s_aligned, char** t_aligned);

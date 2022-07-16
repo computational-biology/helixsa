@@ -112,11 +112,9 @@ void comp_needleman_wunsch(struct multi_fasta* seq1, struct multi_fasta* seq2,  
      		fprintf(fp, "%s", t_aligned);
      		//fprintf(fp, "TER\n\n");
 
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
 		
-     		int score = match_score_simple(s_aligned, t_aligned);
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
-     		fprintf(fp, "SEC SCORE: %d\n\n", score);
+     		double score = match_score_simple(s_aligned, t_aligned);
+     		fprintf(fp, "SEC SCORE: %6.2lf\n\n", score);
      		free(s_aligned);
      		s_aligned = NULL;
      		free(t_aligned);
@@ -124,19 +122,15 @@ void comp_needleman_wunsch(struct multi_fasta* seq1, struct multi_fasta* seq2,  
 
 
 
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
      		needleman_wunsch(fasta1->fasta[i].seq, fasta2->fasta[j].seq, params->fasta_mat, params->fasta_gap, &s_aligned, & t_aligned);
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
 
      		//fprintf(fp, "FASTA   1: PDB-%s  CHN-%s        2: PDB-%s   CHN-%s\n", seq1_fasta.fasta[i].accn, seq1_fasta.fasta[i].chain,
      		//                                                            seq2_fasta.fasta[j].accn, seq2_fasta.fasta[j].chain);
      		//fprintf(fp, "FASTA\n");
      		fprintf(fp, "%s", s_aligned);
      		fprintf(fp, "%s", t_aligned);
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
      		score = match_score_simple(s_aligned, t_aligned);
-		fprintf(stderr, "Trace..... Executing File %s at line %d.\n", __FILE__, __LINE__);
-     		fprintf(fp, "PRI SCORE: %d\n", score);
+     		fprintf(fp, "PRI SCORE: %6.2lf\n", score);
      		fprintf(fp, "TER\n\n");
      		free(s_aligned);
      		s_aligned = NULL;
@@ -164,7 +158,23 @@ void comp_needleman_wunsch(struct multi_fasta* seq1, struct multi_fasta* seq2,  
 }
 
 
+void multi_fasta_adjust(struct multi_fasta* mf, char rule){
+      if(rule == 'H') {// don't distinguish base pairs. H for all helix, W for all non-helix BP
+	    for(int i=0; i<mf->size; ++i){
+		  char* s = mf->fasta[i].seq;
+		  int j = 0;
+		  while(s[j] != '\0'){
+			if(s[j] == 'W' || s[j] == 'N' || s[j] == 'M' || s[j] == 'T'){
+			      s[j] = 'H';
+			}else if( s[j] == 'w' || s[j] == 'n' || s[j] == 'm' || s[j] == 't'){
+			      s[j] = 'P';
+			}
+			j++;
+		  }
 
+	    }
+      }
+}
 
 
 
@@ -254,6 +264,9 @@ int main(int argc, char* argv[])
       fname_join(infile, file1_path, file1_name, ".sec");
       struct multi_fasta secseq1;
       scan_multifasta(&secseq1, infile);
+      if(params.helix_only == 'T'){
+	    multi_fasta_adjust(&secseq1, 'H');
+      }
 
       fname_join(infile, file1_path, file1_name, ".fasta");
       struct multi_fasta fastaseq1;
@@ -313,6 +326,9 @@ int main(int argc, char* argv[])
 	    fname_join(infile, file_path, file_name, ".sec");
 	    struct multi_fasta secseq2;
 	    scan_multifasta(&secseq2, infile);
+	    if(params.helix_only == 'T'){
+		  multi_fasta_adjust(&secseq2, 'H');
+	    }
 
 	    fname_join(infile, file_path, file_name, ".fasta");
 	    struct multi_fasta fastaseq2;

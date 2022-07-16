@@ -22,7 +22,7 @@
 #define MIN3(a, b, c)  ((a) < (b) ? ((a) < (c)? (a):(c)): ((b) < (c) ? (b) : (c)))
 #define MAX3(a, b, c)  ((a) > (b) ? ((a) > (c)? (a):(c)): ((b) > (c) ? (b) : (c)))
 
-int match_score_simple(char* a, char* b){
+double match_score_simple(char* a, char* b){
       int lna = strlen(a);
       int lnb = strlen(b);
       if( lna != lnb ){    /* Exception Handling */ 
@@ -30,12 +30,24 @@ int match_score_simple(char* a, char* b){
 	    exit(EXIT_FAILURE);
       }
       int score = 0;
+      int gap_count = 0;
       for(int i=0; i<lna; ++i){
-	    if(a[i] == b[i]) score ++;
-	    else if(a[i] == '-' || b[i] == '-') score -- ;
-	    else score --;
+	    if(a[i] == b[i]){
+	         score = score + 2;
+	         gap_count = 0;
+	    }else if(a[i] == '-' || b[i] == '-') {
+	        if(gap_count == 0) score = score - 10;
+	        else score = score - 1;
+	        gap_count ++;
+	    }
+	    else{
+	         score = score - 3;
+	         gap_count = 0;
+	    }
       }
-      return score;
+      double percent = score;// = ((double)score * 100.0)/((double)lna);
+      
+      return percent;
 }
 
 void manipulate_secseq_coil(char* s, char* t){
@@ -53,14 +65,15 @@ void rna_secseq_scoring(int SMAT[][128]){
 //      int G = 'G';
 //      int C = 'C';
 //      int U = 'U';
-      int H = 'W';
+      int W = 'W';
+      int H = 'H';
       int N = 'N';
       int n = 'n';
       int C = 'C'; 
       int L = 'L';
       int T = 'T';
       int t = 't';
-      int W = 'w';
+      int w = 'w';
       int B = 'B';
 //      int U = 'U';
       for(int i=0; i<127; ++i){
@@ -73,6 +86,7 @@ void rna_secseq_scoring(int SMAT[][128]){
 	    }
       }
       SMAT[H][H] = 100; 
+      SMAT[W][W] = 100;
       SMAT[L][L] = 6; 
       SMAT[T][T] = 8; 
       SMAT[N][N] = 9; 
