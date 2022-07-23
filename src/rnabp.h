@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "biodefs.h"
 
 
 
@@ -29,7 +30,9 @@ struct nucbp{
 
       int numbp;
 };
-
+void rnabp_fprint(struct nucbp* self, int numres, char* accn, FILE* fp);
+void rnabp_fprint_vertical(struct nucbp* self, int numres, char* accn, FILE* fp);
+void rnabp_fprint_summary(struct nucbp* self, int numres, char* accn, FILE* fp);
 int is_canonical(char res1, char res2, char* bpname);
  
 void rnabp_scan_out(struct nucbp *self, int numres, char *outfile);

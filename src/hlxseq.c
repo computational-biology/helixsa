@@ -48,6 +48,10 @@ void hlxinfo_create(struct hlxinfo* hlx, char* rule, char* infile)
 
 
       hlx->numres = get_numres(outfile);
+      if( hlx->numres == 0 ){    /* Exception Handling */ 
+	    fprintf(stderr, "Error in function %s()... no rna found for %s\n", __func__, basename);
+	    exit(EXIT_FAILURE);
+      }
       hlx->rnabp = (struct nucbp*) malloc ( hlx->numres * sizeof(struct nucbp) );
       if ( hlx->rnabp == NULL ) {
 	    fprintf ( stderr, "\ndynamic memory allocation failed in function %s()\n" , __func__);

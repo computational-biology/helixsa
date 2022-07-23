@@ -1047,3 +1047,114 @@ int lc_subseq(const char* A, const char* B, char** lcs, char** a, char** b){
     free(U);
     return index;
 }
+
+
+void putnch(FILE*fp, char c, int num){
+      for(int i=0; i<num; ++i){
+	    fprintf(fp, "%c", c);
+      }
+}
+void longest_common_substr_fprint(const char* s, const char* t, int sindex[], int tindex[], int size, int numstr, FILE* fp)
+{
+
+      
+      for(int i=0; i<numstr; ++i){
+	    int gap = sindex[i] - tindex[i];
+	    if(gap >=0){
+		  fprintf(fp, "%s\n", s);
+		  
+		  
+		  putnch(fp, ' ', sindex[i]);
+		  fprintf(fp,"|");
+		  putnch(fp, '-', size-2);
+		  fprintf(fp,"|");
+		  fprintf(fp,"\n");
+		  putnch(fp, ' ', gap);
+		  fprintf(fp, "%s\n", t);
+	    }else{
+		  putnch(fp, ' ', -gap);
+		  fprintf(fp, "%s\n", s);
+		  putnch(fp, ' ', tindex[i]);
+		  fprintf(fp,"|");
+		  putnch(fp, '-', size-2);
+		  fprintf(fp,"|");
+		  fprintf(fp,"\n");
+		  fprintf(fp, "%s\n", t);
+	    }
+	    fprintf(fp, "size =%d\n", size);
+      }
+}
+void longest_common_substr(const char* s, const char* t, int sindex[], int tindex[], int* size, int* numstr)
+{
+      int slen = strlen(s);
+      int tlen = strlen(t);
+
+      
+      int* strs[2];
+      int k = 0;
+      int longest = 0;
+      for(int i=0; i<2; ++i){
+	    strs[i] = (int*) malloc ( tlen * sizeof(int) );
+	    if ( strs[i]==NULL ) {
+		  fprintf ( stderr, "\ndynamic memory allocation failed in function %s()\n" , __func__);
+		  exit (EXIT_FAILURE);
+	    }
+      }
+
+      for(int i=0; i<tlen; ++i){
+	    strs[0][i] = 0;
+      }
+
+      for(int i=0; i<tlen; ++i){
+	    strs[1][i] = 0;
+      }
+      
+      for (int i = 0; i < slen; ++i) {
+	      for(int j=0; j< tlen; ++j){
+		    strs[0][j] = strs[1][j];
+	      }
+	      for (int j=0; j<tlen; ++j) {
+		    if (s[i] == t[j]) {
+			  if (i == 0 || j == 0) {
+				strs[1][j] = 1;
+			  } else {
+				strs[1][j] = strs[0][j-1] + 1;
+			  }
+			  if (strs[1][j] > longest) {
+				longest = strs[1][j];
+				k = 0;
+			  }
+			  if (strs[1][j] == longest) {
+				sindex[k] = i;
+				tindex[k] = j;
+				k++;
+			  }
+		    } else {
+			  strs[1][j] = 0;
+		    }
+	      }
+	}
+        if( k > 100 ){
+	      k = 100;
+	}
+	for(int i=0; i<k; ++i){
+	      sindex[i] = sindex[i] - (longest - 1);
+	      tindex[i] = tindex[i] - (longest - 1);
+	}
+	*numstr = k;
+
+	
+//	for (int i = 0; i < 2; i++){
+////	      free ( strs[i] );
+////	      strs[i]	= NULL;
+//	}
+//	free(strs);
+
+	
+	*size = longest;
+
+	for(int i=0; i<2; ++i){
+	      free ( strs[i] );
+	      strs[i] = NULL;
+	}
+}

@@ -93,7 +93,8 @@ int KMP_match_first(char* pattern, int p_len, char* text, int t_len);
 void lc_subseq_free(char* lcs, char* a, char* b);
 
 int lc_subseq(const char* A, const char* B, char** lcs, char** a, char** b);
-
+void longest_common_substr_fprint(const char* s, const char* t, int sindex[], int tindex[], int size, int numstr, FILE* fp);
+void longest_common_substr(const char* s, const char* t, int sindex[], int tindex[], int* size, int* numstr);
 
 
 #endif //CONSHELIX_EDITDIST_H

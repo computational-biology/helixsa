@@ -71,8 +71,9 @@ void scan_multifasta(struct multi_fasta* mfasta, const char* fasta_file)
 
       FILE	*fp;										/* output-file pointer */
       const char *fp_file_name = fasta_file;		/* output-file name    */
-      char line[128];
+      char line[512];
       int line_size = sizeof(line);
+
 
       fp	= fopen( fp_file_name, "r" );
       if ( fp == NULL ) {
@@ -83,7 +84,7 @@ void scan_multifasta(struct multi_fasta* mfasta, const char* fasta_file)
 
       mfasta->size = 0;
       struct fasta* fasta;
-      int size = 0;
+      //int size = 0;
       int len = 0;
 
       while(fgets(line, line_size, fp) != NULL) {
@@ -109,8 +110,11 @@ void scan_multifasta(struct multi_fasta* mfasta, const char* fasta_file)
 		  continue;
 	    }
 	    len = sprintf(fasta->seq + fasta->size,"%s", line);
-	    fasta->size += len - 1; // To discard \n
+	    fasta->size += (len - 1); // To discard \n
+	    fasta->seq[fasta->size] = '\0';
+	    //fprintf(stderr,"%s\n",fasta->seq);
 	    if(fasta->size > fasta->memsize - line_size -3){ // always have enough space to fit the next line.
+	    //fprintf ( stderr, "\ndynamic memory re-allocation done in function %s()\n" , __func__);
 		  fasta->memsize = fasta->memsize * 2;
 		  fasta->seq = (char*) realloc(fasta->seq, fasta->memsize);
 		  if ( fasta->seq==NULL ) {

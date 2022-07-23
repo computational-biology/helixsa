@@ -414,7 +414,8 @@ c        val1(narg) = "-c1"
        character*512 val1(50),valp,valv
        character*15 prnvar(40)
 	real invdegree
-       common /basenms/adevar(43),guavar(36),cytvar(27),uravar(42)
+c       common /basenms/adevar(43),guavar(36),cytvar(27),uravar(42)
+       common /basenms/adevar(40),guavar(33),cytvar(27),uravar(42)
        COMMON /HBQUA/BASE(21,20000),energy(20,20000),
      1                    yangle(20,20000)
        COMMON /HBQTYP/TYPE(20,20000),FEATURE(20,20000)
@@ -435,13 +436,17 @@ c       common /options/cutang,cuteng,cutoff,hetatm
        common /str/strseq(300500)
 	data ans/'No ','Yes'/
       data adevar/'  A',' A ','A  ','ADE','DA5','DA3','1MA','MIA',' +A',
-     1    'AMP','AMO','12A','AET','PSD','AVC','APC','COM','MAD','A23',
-     2    'ATX','2MA','A2M','T6A','RIA','6MZ','6IA',' DA','DA ','ADP',
+c     1    'AMP','AMO','12A','AET','PSD','AVC','APC','COM','MAD','A23', ! original
+     1    'AMO','12A','AET','PSD','AVC','APC','COM','MAD','A23',
+c     2    'ATP','2MA','A2M','T6A','RIA','6MZ','6IA',' DA','DA ','ADP', ! original
+     2    '2MA','A2M','T6A','RIA','6MZ','6IA',' DA','DA ',
      3    '5AA','PR5','2AD','3DA','ANZ','AVC','TSB','QSI','VAA',' RA',
      4    'RA ','RA5','RA3', '$$$'/
       data guavar/'  G',' G ','G  ','DG ',' DG','GUA','DG5','DG3','2MG',
-     1    'OMG','G7M','GNP','7MG','1MG','5CG',' +G','+G ','GDP','M2G',
-     2    '  I',' I ','I  ','GMP','GTP',' DG','PDG',' YG','YG ','YYG',
+c     1    'OMG','G7M','GNP','7MG','1MG','5CG',' +G','+G ','GDP','M2G', ! original
+     1    'OMG','G7M','7MG','1MG','5CG',' +G','+G ','GDP','M2G',
+c     2    '  I',' I ','I  ','GMP','GTP',' DG','PDG',' YG','YG ','YYG', ! original
+     2    '  I',' I ','I  ',' DG','PDG',' YG','YG ','YYG',
      3    '2PR','XUG',' RG','RG ','RG5','RG3','6OG'/
       data cytvar/'  C',' C ','C  ','CYT','DC5','DC3','5MC',' +C','+C ',
      1    'OMC','S4C','CB2','5IC','CCC','1SC',' DC','DC ','CBV','DCZ',
@@ -3514,7 +3519,8 @@ c	write(52,75)nres
 
         nstfrg=1
         do i=1,nres
-           fastaseq(i)=resd(ists(i))(3:3)
+c           fastaseq(i)=resd(ists(i))(3:3)
+	   call renbase(resd(ists(i)),fastaseq(i))
 	   if(ists(i).gt.1) then	! bhatta March 17, 2021
            if((i.gt.1.and.(chaind(ists(i)).ne.chaind(ists(i)-1))).or.i
      1     .eq.nres) then
@@ -4302,7 +4308,7 @@ c        write(6,*) data(1:55),' In Character:',cda(nresid),' in num',ird
        common /residue/resid(300000)
        common /num/kresd(300500),prd(300500)
        common /cum/pchaind(300500),pcd(300500),molid
-       common /basenms/adevar(43),guavar(36),cytvar(27),uravar(42)
+       common /basenms/adevar(40),guavar(33),cytvar(27),uravar(42)
   
 !------------------------------------
 C       chainid='XXXX'
@@ -4421,7 +4427,7 @@ c     1 ya,za,ocp,':',l,':',iresd(l),':',lresno,':'
         character*1 base,allins
        COMMON /BETA/IRESD(300000),ISTS(300500),IENS(300500),nres,
      1   allins(300500),nforce,navar,ngvar,ncvar,nuvar,mresd(300500)
-       common /basenms/adevar(43),guavar(36),cytvar(27),uravar(42)
+       common /basenms/adevar(40),guavar(33),cytvar(27),uravar(42)
 
    	do i=1,navar
 	   if(bs.eq.adevar(i)) base='a'
